@@ -1,0 +1,3 @@
+git+https://github.com/moritalous/gpt-researcher@change_ChatBedrock_to_ChatBedrockConverse
+langchain-aws
+streamlit
