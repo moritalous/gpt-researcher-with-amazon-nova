@@ -1,4 +1,5 @@
 git+https://github.com/moritalous/gpt-researcher@support_litellm_model
 boto3
+langchain_aws
 litellm
 streamlit
