@@ -1,4 +1,4 @@
-git+https://github.com/moritalous/gpt-researcher@support_litellm_model
+gpt-researcher
 boto3
 langchain_aws
 litellm
