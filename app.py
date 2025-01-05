@@ -1,13 +1,11 @@
 import asyncio
 from typing import Any, Dict
 
+import boto3
 import streamlit as st
 from dotenv import load_dotenv
 from gpt_researcher import GPTResearcher
 from gpt_researcher.prompts import get_prompt_by_report_type
-from langchain_aws import ChatBedrockConverse
-from langchain_core.messages import HumanMessage
-from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()
 
@@ -111,11 +109,35 @@ async def main():
             language="Japanese",
         )
 
-        # チェーンを設定して出力をストリーム表示
-        chain = ChatBedrockConverse(model="amazon.nova-lite-v1:0") | StrOutputParser()
+        # レポートを出力
+        client = boto3.client("bedrock-runtime")
+        response = client.converse_stream(
+            modelId="us.amazon.nova-pro-v1:0",
+            messages=[{
+                "role": "user",
+                "content": [
+                    {
+                        "text": content
+                    }
+                ]
+            }]
+        )
 
-        st.write_stream(chain.stream([HumanMessage(content=content)]))
+        def stream_output(response):
+            for stream in response["stream"]:
+                if "contentBlockDelta" in stream and "delta" in stream["contentBlockDelta"] and "text" in stream["contentBlockDelta"]["delta"]:
+                    yield stream["contentBlockDelta"]["delta"]["text"]
 
+        st.write_stream(stream_output(response))
+
+        with st.expander("costs", expanded=False):
+            st.write(costs)
+        with st.expander("sources", expanded=False):
+            st.write(sources)
+        with st.expander("context", expanded=False):
+            st.write(context)
+        with st.expander("images", expanded=False):
+            st.write(images)
 
 # 非同期処理を実行
 asyncio.run(main())

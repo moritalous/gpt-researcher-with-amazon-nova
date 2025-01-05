@@ -1,3 +1,4 @@
-git+https://github.com/moritalous/gpt-researcher@change_ChatBedrock_to_ChatBedrockConverse
-langchain-aws
+git+https://github.com/moritalous/gpt-researcher@support_litellm_model
+boto3
+litellm
 streamlit
